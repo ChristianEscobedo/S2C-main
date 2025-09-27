@@ -1,0 +1,36 @@
+flowchart TD
+    Start([📥 Webhook from Polar<br/>userId + polarSubscriptionId]) --> Step1[🔍 STEP 1: Query by Polar ID]
+    
+    Step1 --> CheckPolar{Found subscription<br/>by Polar ID?}
+    
+    CheckPolar -->|Yes| SecurityCheck{🛡️ Same user?<br/>existingByPolar.userId === args.userId}
+    CheckPolar -->|No| Step2[🔍 STEP 2: Query by User ID]
+    
+    SecurityCheck -->|✅ Yes| Case1A[🎯 CASE 1A: Happy Path<br/>✏️ Update existing subscription<br/>Perfect match!]
+    SecurityCheck -->|❌ No| Case1B[🚨 CASE 1B: Identity Mismatch<br/>Check if user has different subscription]
+    
+    Case1B --> CheckUserSub{User has existing<br/>subscription?}
+    CheckUserSub -->|Yes| Case1B1[🔄 Update user's subscription<br/>with new Polar ID<br/>💾 Preserve credits & history]
+    CheckUserSub -->|No| Case1B2[➕ Create new subscription<br/>creditsBalance: 0]
+    
+    Step2 --> CheckUser{Found subscription<br/>by User ID?}
+    
+    CheckUser -->|Yes| Case2[🎯 CASE 2: Polar ID Migration<br/>🔄 Update existing subscription<br/>with new Polar data<br/>💾 Preserve credits & history]
+    CheckUser -->|No| Case3[🎯 CASE 3: New User<br/>➕ Create fresh subscription<br/>creditsBalance: 0]
+    
+    Case1A --> End([✅ Return subscription ID])
+    Case1B1 --> End
+    Case1B2 --> End
+    Case2 --> End
+    Case3 --> End
+    
+    style Start fill:#e1f5fe
+    style Case1A fill:#c8e6c9
+    style Case1B1 fill:#fff3e0
+    style Case1B2 fill:#fce4ec
+    style Case2 fill:#fff3e0
+    style Case3 fill:#f3e5f5
+    style End fill:#e8f5e8
+    
+    classDef caseBox fill:#fff,stroke:#333,stroke-width:2px
+    class Case1A,Case1B1,Case1B2,Case2,Case3 caseBox

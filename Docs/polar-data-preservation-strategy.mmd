@@ -1,0 +1,36 @@
+graph LR
+    subgraph "🏦 Data Preservation Strategy"
+        A[Incoming Polar Data] --> B{Existing Subscription?}
+        
+        B -->|Found| C[📦 Base Data<br/>- userId<br/>- polarCustomerId<br/>- polarSubscriptionId<br/>- status<br/>- currentPeriodEnd<br/>- etc.]
+        
+        C --> D[💰 Credits Fallback Chain]
+        D --> E["creditsGrantPerPeriod:<br/>args → existing polar → existing user → DEFAULT_GRANT"]
+        D --> F["creditsRolloverLimit:<br/>args → existing polar → existing user → DEFAULT_ROLLOVER_LIMIT"]
+        
+        B -->|Found| G[💾 Preserved Data]
+        G --> H["creditsBalance:<br/>NEVER lost - preserves user's money"]
+        G --> I["lastGrantCursor:<br/>Prevents duplicate credit grants"]
+        
+        C --> J[🔧 Final Update]
+        H --> J
+        I --> J
+        E --> J
+        F --> J
+        
+        J --> K[✅ User keeps all credits<br/>Even if Polar ID changes!]
+    end
+    
+    subgraph "🚨 What We Prevent"
+        L[❌ Credit Loss] 
+        M[❌ Duplicate Grants]
+        N[❌ Subscription Hijacking]
+        O[❌ Data Corruption]
+    end
+    
+    style A fill:#e3f2fd
+    style K fill:#c8e6c9
+    style L fill:#ffebee
+    style M fill:#ffebee
+    style N fill:#ffebee
+    style O fill:#ffebee
